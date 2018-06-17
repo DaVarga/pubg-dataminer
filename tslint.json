@@ -10,7 +10,10 @@
   "rules": {
     "no-console": false,
     "no-parameter-properties": false,
-    "align": [true, "statements"],
+    "align": [
+      true,
+      "statements"
+    ],
     "mocha-no-side-effect-code": false,
     "missing-jsdoc": false,
     "no-relative-imports": false,
@@ -19,7 +22,8 @@
     "no-void-expression": false,
     "no-redundant-jsdoc": false,
     "prefer-type-cast": false,
-    "trailing-comma": [ // https://palantir.github.io/tslint/rules/trailing-comma/
+    "trailing-comma": [
+      // https://palantir.github.io/tslint/rules/trailing-comma/
       true,
       {
         "multiline": "always",

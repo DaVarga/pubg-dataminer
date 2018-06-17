@@ -29,7 +29,7 @@ export class MatchIdFetcher {
       let data = await requester.getMatchIds(this.region, this.currentDate);
       this.getMatchIds(data).forEach((id: string) => this.catalog.add(id));
       console.log(`fetched ${this.catalog.size} match ids for region ${this.region}`);
-    }catch (e) {
+    } catch (e) {
 
     }
 

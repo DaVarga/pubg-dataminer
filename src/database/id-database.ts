@@ -16,6 +16,10 @@ export class IdDatabase {
     console.log(`loaded "${this.filePath}" with ${this.catalog.size} ids`);
   }
 
+  get ids(): Set<string> {
+    return this.catalog;
+  }
+
   addToDatabase(ids: Set<String>): number {
     const initialSize = this.catalog.size;
     ids.forEach((id: string) => this.catalog.add(id));
@@ -27,10 +31,6 @@ export class IdDatabase {
   persistDatabase() {
     fs.writeFileSync(this.filePath, JSON.stringify(Array.from(this.catalog), null, 2));
     console.log(`persisted "${this.catalog.size}" ids to "${this.filePath}"`);
-  }
-
-  get ids(): Set<string> {
-    return this.catalog;
   }
 
   private loadIdFile(path: string): Set<string> {

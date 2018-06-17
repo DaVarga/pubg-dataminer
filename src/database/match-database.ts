@@ -12,7 +12,7 @@ export class MatchDatabase {
 
   public checkMatch(region: string, matchId: string) {
     const path = this.getDirectoryPath(region, matchId);
-    return new Directory(path+'.7z').exists()
+    return new Directory(path + '.7z').exists()
   }
 
   public async addMatch(region: string, matchId: string, info: any, telemetry: any): Promise<void> {

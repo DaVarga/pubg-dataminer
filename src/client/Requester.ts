@@ -2,20 +2,21 @@ import * as https from "https";
 import * as url from "url";
 
 export class Requester {
-  constructor(private apiKey?: string) {  }
+  constructor(private apiKey?: string) {
+  }
 
   public async getMatchIds(region: string, startDate: Date): Promise<string> {
-      const options: https.RequestOptions = {
-        headers: {
-          accept: 'application/vnd.api+json',
-          Authorization: `Bearer ${this.apiKey}`,
-        },
-        host: 'api.playbattlegrounds.com',
-        port: 443,
-        method: 'GET',
-        path: `/shards/${region}/samples?filter[createdAt-start]=${startDate.toISOString()}`,
-      };
-      return this.request(options);
+    const options: https.RequestOptions = {
+      headers: {
+        accept: 'application/vnd.api+json',
+        Authorization: `Bearer ${this.apiKey}`,
+      },
+      host: 'api.playbattlegrounds.com',
+      port: 443,
+      method: 'GET',
+      path: `/shards/${region}/samples?filter[createdAt-start]=${startDate.toISOString()}`,
+    };
+    return this.request(options);
   }
 
   public async getMatchInfo(region: string, matchId: string): Promise<string> {

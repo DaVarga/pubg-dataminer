@@ -14,7 +14,7 @@ class Main {
 
     for (let k of this.configManager.config.keys) {
       let region = this.getNextRegion();
-      if(!region) {
+      if (!region) {
         return;
       }
       let fetcher = new MatchIdFetcher(region, this.yesterday);

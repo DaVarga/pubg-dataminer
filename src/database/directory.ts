@@ -1,13 +1,14 @@
 import * as fs from "fs";
 
 export class Directory {
-  constructor(private dirPath: string) {  }
+  constructor(private dirPath: string) {
+  }
 
   get path(): string {
     return this.dirPath;
   }
 
-  exists(): boolean{
+  exists(): boolean {
     return fs.existsSync(this.path);
   }
 
