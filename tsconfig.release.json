@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "build",
+    "removeComments": true,
+    "typeRoots": [
+      "node_modules/@types",
+      "src/types/"
+    ]
+  },
+  "include": [
+    "src/**/*"
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "name": "pubg-dataminer",
+  "version": "0.0.0",
+  "description": "Pubg dataminer",
+  "engineStrict": true,
+  "engines": {
+    "node": ">= 8.9.0"
+  },
+  "devDependencies": {
+    "@types/jest": "~22.2.3",
+    "@types/node": "~8.10.18",
+    "jest": "~23.1.0",
+    "rimraf": "~2.6.2",
+    "ts-jest": "~22.4.6",
+    "tslint": "~5.10.0",
+    "tslint-microsoft-contrib": "~5.0.3",
+    "tsutils": "~2.27.1",
+    "typescript": "~2.9.1"
+  },
+  "scripts": {
+    "postinstall": "npm run clean && npm run build",
+    "clean": "rimraf coverage build tmp",
+    "build": "tsc -p tsconfig.release.json",
+    "watch": "tsc -w -p tsconfig.release.json",
+    "lint": "tslint -t stylish --project \"tsconfig.json\"",
+    "pretest": "npm run lint",
+    "test": "npm run test-only",
+    "test-only": "jest --coverage",
+    "test:watch": "jest --watch",
+    "fetch:matches": "node build/fetch-ids.js",
+    "fetch:telemetry": "node build/fetch-match.js"
+  },
+  "author": "Daniel Varga <daniel.varga@gmx.de>",
+  "license": "MIT",
+  "dependencies": {
+    "tslib": "~1.9.2"
+  }
+}
