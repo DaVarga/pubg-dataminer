@@ -18,14 +18,18 @@ class Main {
   private async load(region: string) {
     const idDatabase: IdDatabase = new IdDatabase(this.configManager, region);
     for (let id of idDatabase.ids) {
-      if (!this.matchDatabase.checkMatch(region, id)) {
-        const matchInfo = await this.requester.getMatchInfo(region, id);
-        const data: any = JSON.parse(matchInfo);
-        const urlParsed = (data.included.find((e) => e.type === 'asset').attributes.URL);
-        const matchTelemetry = await  this.requester.getMatchTelemetry(urlParsed);
-        this.matchDatabase.addMatch(region, id, matchInfo, matchTelemetry);
-      } else {
-        console.info(`skipping ${region} ${id}`);
+      try {
+        if (!this.matchDatabase.checkMatch(region, id)) {
+          const matchInfo = await this.requester.getMatchInfo(region, id);
+          const data: any = JSON.parse(matchInfo);
+          const urlParsed = (data.included.find((e) => e.type === 'asset').attributes.URL);
+          const matchTelemetry = await  this.requester.getMatchTelemetry(urlParsed);
+          this.matchDatabase.addMatch(region, id, matchInfo, matchTelemetry);
+        } else {
+          console.info(`skipping ${region} ${id}`);
+        }
+      } catch (e) {
+        console.error(e);
       }
     }
   }
