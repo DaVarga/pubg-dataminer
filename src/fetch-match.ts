@@ -29,6 +29,7 @@ class Main {
           console.info(`skipping ${region} ${id}`);
         }
       } catch (e) {
+        console.error(`---------FETCH ERROR: ${region} ${id}:----------`);
         console.error(e);
       }
     }
