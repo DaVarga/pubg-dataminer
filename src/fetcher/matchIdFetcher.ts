@@ -21,14 +21,14 @@ export class MatchIdFetcher {
   public async fetch(requester: Requester): Promise<boolean> {
     this.currentDate.setDate(this.currentDate.getDate() - 1);
     if (new Date().valueOf() - this.currentDate.valueOf() > 1209600000) { //exit condition 336h
-      console.warn('maximum fetched');
+      console.warn(`[${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}] maximum fetched`);
       return true;
     }
 
     try {
       let data = await requester.getMatchIds(this.region, this.currentDate);
       this.getMatchIds(data).forEach((id: string) => this.catalog.add(id));
-      console.log(`fetched ${this.catalog.size} match ids for region ${this.region}`);
+      console.log(`[${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}] fetched ${this.catalog.size} match ids for region ${this.region}`);
     } catch (e) {
       console.error(e);
     }

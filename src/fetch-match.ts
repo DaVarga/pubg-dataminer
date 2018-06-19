@@ -27,12 +27,12 @@ class Main {
           const matchTelemetry = await  this.requester.getMatchTelemetry(urlParsed);
           this.matchDatabase.addMatch(region, id, matchInfo, matchTelemetry);
         } else {
-          console.info(`skipping ${region} ${id}`);
+          console.info(`[${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}] skipping ${region} ${id}`);
         }
       } catch (e) {
         failsDatabase.addToDatabase(new Set<string>([id]));
         failsDatabase.persistDatabase();
-        console.error(`---------FETCH ERROR: ${region} ${id}:----------`);
+        console.error(`[${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}] FETCH ERROR: ${region} ${id}`);
         console.error(e);
       }
     }

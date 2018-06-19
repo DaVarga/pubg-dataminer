@@ -41,7 +41,7 @@ class Main {
     }
 
     if (this.configManager.config.keys.length === 0) {
-      console.error(`Please add your API keys to the miner-config.json, see README.md for more details.`);
+      console.error(`[${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}] Please add your API keys to the miner-config.json, see README.md for more details.`);
       process.exit();
     }
   }

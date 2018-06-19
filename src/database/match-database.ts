@@ -28,7 +28,7 @@ export class MatchDatabase {
       pathes.forEach(fs.unlinkSync);
       fs.rmdirSync(path);
     } catch (e) {
-      console.error(`could not save ${region} ${matchId}, error: ${e}`);
+      console.error(`[${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}] could not save ${region} ${matchId}, error: ${e}`);
     }
   }
 

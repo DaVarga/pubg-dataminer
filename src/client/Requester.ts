@@ -57,7 +57,7 @@ export class Requester {
           if (res.statusCode === 200) {
             resolve(data);
           } else {
-            console.error(`ERROR: ${res.statusCode}`);
+            console.error(`[${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}] ERROR: ${res.statusCode}`);
             console.error(`BODY: ${data}`);
             reject(res.statusCode);
           }

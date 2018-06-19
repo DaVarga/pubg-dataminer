@@ -13,7 +13,7 @@ export class IdDatabase {
 
     this.filePath = directoryPath + this.getIdFileName(region);
     this.catalog = this.loadIdFile(this.filePath);
-    console.log(`loaded "${this.filePath}" with ${this.catalog.size} ids`);
+    console.log(`[${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}] loaded "${this.filePath}" with ${this.catalog.size} ids`);
   }
 
   get ids(): Set<string> {
@@ -24,13 +24,13 @@ export class IdDatabase {
     const initialSize = this.catalog.size;
     ids.forEach((id: string) => this.catalog.add(id));
     const addedIds = this.catalog.size - initialSize;
-    console.log(`added "${addedIds}" ids to "${this.filePath}"`);
+    console.log(`[${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}] added "${addedIds}" ids to "${this.filePath}"`);
     return addedIds;
   }
 
   persistDatabase() {
     fs.writeFileSync(this.filePath, JSON.stringify(Array.from(this.catalog), null, 2));
-    console.log(`persisted "${this.catalog.size}" ids to "${this.filePath}"`);
+    console.log(`[${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}] persisted "${this.catalog.size}" ids to "${this.filePath}"`);
   }
 
   private loadIdFile(path: string): Set<string> {
@@ -39,7 +39,7 @@ export class IdDatabase {
 
       return new Set<string>(JSON.parse(content));
     } catch (e) {
-      console.error(`error loading "${this.filePath}" ids database, creating new`);
+      console.error(`[${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}] error loading "${this.filePath}" ids database, creating new`);
 
       return new Set<string>();
     }
