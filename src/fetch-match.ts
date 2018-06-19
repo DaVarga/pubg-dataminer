@@ -17,9 +17,10 @@ class Main {
 
   private async load(region: string) {
     const idDatabase: IdDatabase = new IdDatabase(this.configManager, region);
+    const failsDatabase: IdDatabase = new IdDatabase(this.configManager, region + '-fail');
     for (let id of idDatabase.ids) {
       try {
-        if (!this.matchDatabase.checkMatch(region, id)) {
+        if (!this.matchDatabase.checkMatch(region, id) && !failsDatabase.ids.has(id)) {
           const matchInfo = await this.requester.getMatchInfo(region, id);
           const data: any = JSON.parse(matchInfo);
           const urlParsed = (data.included.find((e) => e.type === 'asset').attributes.URL);
@@ -29,6 +30,8 @@ class Main {
           console.info(`skipping ${region} ${id}`);
         }
       } catch (e) {
+        failsDatabase.addToDatabase(new Set<string>([id]));
+        failsDatabase.persistDatabase();
         console.error(`---------FETCH ERROR: ${region} ${id}:----------`);
         console.error(e);
       }
