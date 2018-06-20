@@ -30,7 +30,6 @@ export class MatchIdFetcher {
       this.getMatchIds(data).forEach((id: string) => this.catalog.add(id));
       console.log(`[${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}] fetched ${this.catalog.size} match ids for region ${this.region}`);
     } catch (e) {
-      console.error(e);
     }
 
     return false;
