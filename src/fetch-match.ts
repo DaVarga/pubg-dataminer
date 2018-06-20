@@ -8,9 +8,16 @@ class Main {
   private regions: string[] = [...this.configManager.config.regions];
   private requester: Requester = new Requester();
   private matchDatabase: MatchDatabase = new MatchDatabase(this.configManager);
+  private args:string[] = process.argv.slice(2).filter(arg => this.regions.indexOf(arg) !== -1);
+
+  constructor() {
+    if (!this.args.length) {
+      this.args = this.regions;
+    }
+  }
 
   public async run() {
-    for (let region of this.regions) {
+    for (let region of this.args) {
       await this.load(region);
     }
   }
@@ -36,6 +43,7 @@ class Main {
         console.error(e);
       }
     }
+    process.exit();
   }
 
 }

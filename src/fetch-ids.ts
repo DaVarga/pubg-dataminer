@@ -8,8 +8,15 @@ class Main {
   private yesterday: Date = new Date();
   private configManager: ConfigManager = new ConfigManager('miner-config.json');
   private regions: string[] = [...this.configManager.config.regions];
+  private args: string[] = process.argv.slice(2).filter(arg => this.regions.indexOf(arg) !== -1);
 
   constructor() {
+    if (!this.args.length) {
+      this.args = this.regions;
+    }
+  }
+
+  public run() {
     this.yesterday.setDate(this.yesterday.getDate() - 1);
 
     for (let k of this.configManager.config.keys) {
@@ -47,9 +54,8 @@ class Main {
   }
 
   private getNextRegion(): string {
-    return this.regions.shift();
+    return this.args.shift();
   }
 }
 
-// tslint:disable-next-line:no-unused-expression
-new Main();
+new Main().run();
