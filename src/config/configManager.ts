@@ -42,6 +42,6 @@ export class ConfigManager {
   }
 
   private updateOptions(file: string): void {
-    this.configObj = JSON.parse(fs.readFileSync(file, {encoding: 'utf8', flag: 'r'}));
+    Object.assign(this.configObj,this.defaults, JSON.parse(fs.readFileSync(file, {encoding: 'utf8', flag: 'r'})));
   }
 }

@@ -23,7 +23,7 @@ export class MatchDatabase {
         this.writeToDisk(path + '/info.json', info),
         this.writeToDisk(path + '/telemetry.json', telemetry)
       ]);
-      await this.compressor.compressMatch(pathes, path);
+      await this.compressor.compressMatch(path);
       console.error(`[${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}] created ${path}.7z`);
       //remove uncompressed files and folders
       pathes.forEach(fs.unlinkSync);
