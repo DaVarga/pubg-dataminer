@@ -20,7 +20,7 @@ export class ConfigManager {
       'xbox-na',
       'xbox-oc',
     ],
-    dbPath: 'output/',
+    dbPath: './output/',
   };
 
   private configObj: IConfigFile = this.defaults;
