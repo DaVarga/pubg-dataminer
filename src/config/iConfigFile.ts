@@ -3,6 +3,7 @@ export interface IConfigFile {
   regions: string[];
   dbPath: string;
   matchConcurrency: number;
+  execParams7z: string,
 }
 
 export type Key = { bearer: string; rpm: number };

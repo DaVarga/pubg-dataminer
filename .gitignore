@@ -29,3 +29,5 @@ build/
 .DS_Store
 
 miner-config.json
+
+output/

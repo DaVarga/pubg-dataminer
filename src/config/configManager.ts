@@ -22,6 +22,7 @@ export class ConfigManager {
     ],
     dbPath: './output/',
     matchConcurrency: 10,
+    execParams7z: '-mx=3',
   };
 
   private configObj: IConfigFile = this.defaults;

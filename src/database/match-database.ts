@@ -5,7 +5,7 @@ import {Compressor} from "./compressor";
 
 export class MatchDatabase {
 
-  private compressor: Compressor = new Compressor();
+  private compressor: Compressor = new Compressor(this.configManager);
 
   constructor(private configManager: ConfigManager) {
   }
