@@ -1,14 +1,15 @@
-import {ConfigManager} from "./config/configManager";
-import {Requester} from "./client/Requester";
-import {IdDatabase} from "./database/id-database";
-import {MatchDatabase} from "./database/match-database";
+import PromisePool from 'es6-promise-pool';
+import {Requester} from './client/Requester';
+import {ConfigManager} from './config/configManager';
+import {IdDatabase} from './database/id-database';
+import {MatchDatabase} from './database/match-database';
 
 class Main {
   private configManager: ConfigManager = new ConfigManager('miner-config.json');
   private regions: string[] = [...this.configManager.config.regions];
   private requester: Requester = new Requester();
   private matchDatabase: MatchDatabase = new MatchDatabase(this.configManager);
-  private args:string[] = process.argv.slice(2).filter(arg => this.regions.indexOf(arg) !== -1);
+  private args: string[] = process.argv.slice(2).filter((arg: string) => this.regions.indexOf(arg) !== -1);
 
   constructor() {
     if (!this.args.length) {
@@ -17,35 +18,52 @@ class Main {
   }
 
   public async run() {
-    for (let region of this.args) {
+    for (const region of this.args) {
       await this.load(region);
     }
+    process.exit();
   }
 
   private async load(region: string) {
     const idDatabase: IdDatabase = new IdDatabase(this.configManager, region);
     const failsDatabase: IdDatabase = new IdDatabase(this.configManager, region + '-fail');
-    for (let id of idDatabase.ids) {
-      try {
-        if (!this.matchDatabase.checkMatch(region, id) && !failsDatabase.ids.has(id)) {
-          const matchInfo = await this.requester.getMatchInfo(region, id);
-          const data: any = JSON.parse(matchInfo);
-          const urlParsed = (data.included.find((e) => e.type === 'asset').attributes.URL);
-          const matchTelemetry = await  this.requester.getMatchTelemetry(urlParsed);
-          this.matchDatabase.addMatch(region, id, matchInfo, matchTelemetry);
-        } else {
-          console.info(`[${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}] skipping ${region} ${id}`);
-        }
-      } catch (e) {
-        failsDatabase.addToDatabase(new Set<string>([id]));
-        failsDatabase.persistDatabase();
-        console.error(`[${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}] FETCH ERROR: ${region} ${id}`);
-        console.error(e);
-      }
-    }
-    process.exit();
+    // noinspection TypeScript
+    const promisePool: PromisePool<void> = new PromisePool<void>(
+      this.generatePromises(idDatabase, failsDatabase, region),
+      this.configManager.config.matchConcurrency,
+    );
+    // noinspection TsLint
+    promisePool.addEventListener('rejected', (event: any) => {
+      console.log(
+        `[${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}] ${event.data.error.message}`,
+      );
+    });
+    await promisePool.start();
+    promisePool.removeEventListener('rejected');
   }
 
+  private async fetchMatch(region: string, id: string): Promise<void> {
+    const matchInfo = await this.requester.getMatchInfo(region, id);
+    // noinspection TsLint
+    const data: any = JSON.parse(matchInfo);
+    const urlParsed = (data.included.find((e) => e.type === 'asset').attributes.URL);
+    const matchTelemetry = await  this.requester.getMatchTelemetry(urlParsed);
+    this.matchDatabase.addMatch(region, id, matchInfo, matchTelemetry);
+  }
+
+  private* generatePromises(
+    idDatabase: IdDatabase,
+    failsDatabase: IdDatabase,
+    region: string,
+  ): IterableIterator<Promise<void>> {
+    for (const id of idDatabase.ids) {
+      if (!this.matchDatabase.checkMatch(region, id) && !failsDatabase.ids.has(id)) {
+        yield this.fetchMatch(region, id);
+      } else {
+        yield Promise.reject(`skipping ${region} ${id}`);
+      }
+    }
+  }
 }
 
 // noinspection JSIgnoredPromiseFromCall

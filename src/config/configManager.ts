@@ -21,6 +21,7 @@ export class ConfigManager {
       'xbox-oc',
     ],
     dbPath: './output/',
+    matchConcurrency: 10,
   };
 
   private configObj: IConfigFile = this.defaults;
