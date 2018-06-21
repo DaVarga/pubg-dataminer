@@ -1,4 +1,4 @@
-import PromisePool from 'es6-promise-pool';
+import * as PromisePool from 'es6-promise-pool';
 import {Requester} from './client/Requester';
 import {ConfigManager} from './config/configManager';
 import {IdDatabase} from './database/id-database';
@@ -9,7 +9,7 @@ class Main {
   private regions: string[] = [...this.configManager.config.regions];
   private requester: Requester = new Requester();
   private matchDatabase: MatchDatabase = new MatchDatabase(this.configManager);
-  private args: string[] = process.argv.slice(2).filter((arg: string) => this.regions.indexOf(arg) !== -1);
+  private readonly args: string[] = process.argv.slice(2).filter((arg: string) => this.regions.indexOf(arg) !== -1);
 
   constructor() {
     if (!this.args.length) {
@@ -32,23 +32,23 @@ class Main {
       this.generatePromises(idDatabase, failsDatabase, region),
       this.configManager.config.matchConcurrency,
     );
-    // noinspection TsLint
-    promisePool.addEventListener('rejected', (event: any) => {
-      console.log(
-        `[${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}] ${event.data.error.message}`,
-      );
-    });
     await promisePool.start();
-    promisePool.removeEventListener('rejected');
   }
 
   private async fetchMatch(region: string, id: string): Promise<void> {
-    const matchInfo = await this.requester.getMatchInfo(region, id);
-    // noinspection TsLint
-    const data: any = JSON.parse(matchInfo);
-    const urlParsed = (data.included.find((e) => e.type === 'asset').attributes.URL);
-    const matchTelemetry = await  this.requester.getMatchTelemetry(urlParsed);
-    this.matchDatabase.addMatch(region, id, matchInfo, matchTelemetry);
+    try {
+      const matchInfo = await this.requester.getMatchInfo(region, id);
+      // noinspection TsLint
+      const data: any = JSON.parse(matchInfo);
+      const urlParsed = (data.included.find((e) => e.type === 'asset').attributes.URL);
+      const matchTelemetry = await  this.requester.getMatchTelemetry(urlParsed);
+      await this.matchDatabase.addMatch(region, id, matchInfo, matchTelemetry);
+    } catch (e) {
+      console.error(
+        `[${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}] ${e}`
+      );
+    }
+
   }
 
   private* generatePromises(
@@ -60,11 +60,10 @@ class Main {
       if (!this.matchDatabase.checkMatch(region, id) && !failsDatabase.ids.has(id)) {
         yield this.fetchMatch(region, id);
       } else {
-        yield Promise.reject(`skipping ${region} ${id}`);
+        yield Promise.resolve();
       }
     }
   }
 }
 
-// noinspection JSIgnoredPromiseFromCall
 new Main().run();

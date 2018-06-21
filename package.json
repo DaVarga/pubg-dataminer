@@ -33,7 +33,7 @@
   "author": "Daniel Varga <daniel.varga@gmx.de>",
   "license": "MIT",
   "dependencies": {
-    "es6-promise-pool": "^2.5.0",
+    "es6-promise-pool": "git+https://github.com/haslers/es6-promise-pool.git",
     "tslib": "~1.9.2"
   }
 }
