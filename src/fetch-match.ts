@@ -36,19 +36,12 @@ class Main {
   }
 
   private async fetchMatch(region: string, id: string): Promise<void> {
-    try {
-      const matchInfo = await this.requester.getMatchInfo(region, id);
-      // noinspection TsLint
-      const data: any = JSON.parse(matchInfo);
-      const urlParsed = (data.included.find((e) => e.type === 'asset').attributes.URL);
-      const matchTelemetry = await  this.requester.getMatchTelemetry(urlParsed);
-      await this.matchDatabase.addMatch(region, id, matchInfo, matchTelemetry);
-    } catch (e) {
-      console.error(
-        `[${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}] ${e}`
-      );
-    }
-
+    const matchInfo = await this.requester.getMatchInfo(region, id);
+    // noinspection TsLint
+    const data: any = JSON.parse(matchInfo);
+    const urlParsed = (data.included.find((e) => e.type === 'asset').attributes.URL);
+    const matchTelemetry = await  this.requester.getMatchTelemetry(urlParsed);
+    await this.matchDatabase.addMatch(region, id, matchInfo, matchTelemetry);
   }
 
   private* generatePromises(
@@ -58,7 +51,13 @@ class Main {
   ): IterableIterator<Promise<void>> {
     for (const id of idDatabase.ids) {
       if (!this.matchDatabase.checkMatch(region, id) && !failsDatabase.ids.has(id)) {
-        yield this.fetchMatch(region, id);
+        yield this.fetchMatch(region, id).catch(() => {
+          failsDatabase.addToDatabase(new Set<string>([id]));
+          failsDatabase.persistDatabase();
+          console.error(
+            `[${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}] error fetching ${region} ${id}`
+          );
+        });
       } else {
         yield Promise.resolve();
       }
