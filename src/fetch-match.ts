@@ -6,19 +6,26 @@ import {MatchDatabase} from './database/match-database';
 
 class Main {
   private configManager: ConfigManager = new ConfigManager('miner-config.json');
-  private regions: string[] = [...this.configManager.config.regions];
   private requester: Requester = new Requester();
   private matchDatabase: MatchDatabase = new MatchDatabase(this.configManager);
-  private readonly args: string[] = process.argv.slice(2).filter((arg: string) => this.regions.indexOf(arg) !== -1);
+  private exit: boolean = false;
+  private readonly regions: string[] = process.argv
+    .slice(2)
+    .filter((arg: string) => this.configManager.config.regions.indexOf(arg) !== -1);
 
   constructor() {
-    if (!this.args.length) {
-      this.args = this.regions;
+    if (!this.regions.length) {
+      this.regions = [...this.configManager.config.regions];
     }
   }
 
   public async run() {
-    for (const region of this.args) {
+    process.on('SIGINT', () => {
+      console.log("Exiting...");
+      this.exit = true;
+    });
+    for (const region of this.regions) {
+      if (this.exit) break;
       await this.load(region);
     }
     process.exit();
@@ -50,6 +57,7 @@ class Main {
     region: string,
   ): IterableIterator<Promise<void>> {
     for (const id of idDatabase.ids) {
+      if (this.exit) break;
       if (!this.matchDatabase.checkMatch(region, id) && !failsDatabase.ids.has(id)) {
         yield this.fetchMatch(region, id).catch(() => {
           failsDatabase.addToDatabase(new Set<string>([id]));
