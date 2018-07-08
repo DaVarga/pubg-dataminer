@@ -10,8 +10,9 @@ import { Key } from '../../types/config-file';
 export class MatchIdLoop {
   private exit: boolean = false;
   private yesterday: Date;
-  private regions: string[] = [...this.configManager.config.regions];
-  private args: string[] = process.argv.slice(2).filter(arg => this.regions.indexOf(arg) !== -1);
+  private regions: string[] = process.argv
+    .slice(2)
+    .filter((arg: string) => this.configManager.config.regions.indexOf(arg) !== -1);
 
   constructor(
     private configManager: ConfigManager,
@@ -19,8 +20,8 @@ export class MatchIdLoop {
     private matchIdFetcherFactory: MatchIdFetcherFactory,
     private logger: Logger,
   ) {
-    if (!this.args.length) {
-      this.args = this.regions;
+    if (!this.regions.length) {
+      this.regions = [...this.configManager.config.regions];
     }
   }
 
@@ -77,11 +78,11 @@ export class MatchIdLoop {
   }
 
   private getNextRegion(): string {
-    return this.args.shift();
+    return this.regions.shift();
   }
 
   private regionsLeft(): number {
-    return this.args.length;
+    return this.regions.length;
   }
 
   private async timeout(ms: number) {

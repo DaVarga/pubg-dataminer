@@ -1,17 +1,7 @@
 {
   "extends": "./tsconfig.json",
+  "sourceMap": false,
   "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "build",
-    "removeComments": true,
-    "typeRoots": [
-      "node_modules/@types",
-      "src/types/"
-    ],
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true
-  },
-  "include": [
-    "src/**/*"
-  ]
+    "removeComments": true
+  }
 }

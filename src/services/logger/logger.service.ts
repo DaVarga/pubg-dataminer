@@ -32,6 +32,8 @@ export class Logger {
   }
 
   private getTimeTag(date: Date = new Date()) {
-    return `[${date.toLocaleDateString()} ${date.toLocaleTimeString()} ${date.getMilliseconds()}]`;
+    return `[${date.toLocaleDateString()} ${date.toLocaleTimeString()} ${date.getMilliseconds()
+      .toString(10)
+      .padStart(3,'0')}]`;
   }
 }
