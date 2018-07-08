@@ -50,7 +50,7 @@ export class ApiRequester {
   }
 
   private async request(options: https.RequestOptions): Promise<string> {
-    this.logger.debug(Date.now(), 'requesting:\n', options);
+    this.logger.debug('requesting:\n', options);
     return new Promise<string>((resolve, reject) => {
       https.get(options, (res: any) => {
         let data: string = '';
