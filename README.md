@@ -81,6 +81,14 @@ On my machine with an Intel Core i7-3770 and a 1Gbit/s connection I could achiev
 
 ![traffic](https://imgur.com/Hplyc65.png "Traffic")
 
+## Todos
+
+- Unit tests
+- Test different compression techniques
+- Implement console args
+- Improve readme
+- Write database import (mongo?)
 
 ## Contribute
 Patches welcome
+
