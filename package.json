@@ -1,5 +1,7 @@
 {
   "name": "pubg-dataminer",
+  "private": true,
+  "repository": "git@gitlab.com:micron88/pubg-dataminer.git",
   "version": "0.0.0",
   "description": "Pubg dataminer",
   "engineStrict": true,
