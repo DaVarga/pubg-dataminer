@@ -3,5 +3,8 @@
   "sourceMap": false,
   "compilerOptions": {
     "removeComments": true
-  }
+  },
+  "include": [
+    "src/**/*"
+  ]
 }
