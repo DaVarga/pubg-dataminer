@@ -7,7 +7,9 @@
     "typeRoots": [
       "node_modules/@types",
       "src/types/"
-    ]
+    ],
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
   },
   "include": [
     "src/**/*"

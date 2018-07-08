@@ -34,6 +34,8 @@
   "license": "MIT",
   "dependencies": {
     "es6-promise-pool": "git+https://github.com/haslers/es6-promise-pool.git",
-    "tslib": "~1.9.2"
+    "reflect-metadata": "^0.1.12",
+    "tslib": "~1.9.2",
+    "typedi": "^0.8.0"
   }
 }
