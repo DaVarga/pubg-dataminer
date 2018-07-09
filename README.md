@@ -70,18 +70,21 @@ example:
 
 ## Performance
 The cpu can become a limiting factor if you have a fast internet connection. Most resources are used by 7zip to compress the telemetry files. The cpu may not be able to keep up here.  
-On my machine with an Intel Core i7-3770 and a 1Gbit/s connection I could achieve a download speed of ~0.8GBit/s at ~80% cpu utilization with the following settings.
+On my machine with an Intel Core i7-3770 and a 1GBit/s connection I could achieve a download speed of ~0.8GBit/s at ~80% cpu utilization with the following settings.
 
 ```json
   "matchConcurrency": 32,   
-  "execParams7z": "-mx=3 -mmt=off",
+  "execParams7z": "-mx=3",
+  "gzip": true
 ```
 
 - **matchConcurrency:** Parallel match fetch and compression concurrency
     - 32 request seems to be a good choice on my setup
 - **execParams7z:** 7za execution [parameters](https://sevenzip.osdn.jp/chm/cmdline/switches/method.htm)
-    - *-mx=3* compression level 3. Sufficient compression at comparatively low utilization
-    - *-mmt=off* Multi threading disabled since many 7z instances of 7za are running at the same time anyway. 
+    - *-mx=3* compression level 3. Sufficient compression at comparatively low utilization 
+    - *-mmt=off* Multi threading disabled since many 7z instances of 7za are running at the same time anyway
+- **gzip:** Gzip transport compression
+    - *true* In my experience, this option should stay on. It accelerates the transmission on my system by about 10% and reduces the traffic by approx 20% 
 
 ![utilizaton](https://i.imgur.com/OYyreOl.png "Utilization")
 
