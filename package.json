@@ -11,6 +11,7 @@
   "devDependencies": {
     "@types/jest": "~22.2.3",
     "@types/node": "~8.10.18",
+    "@types/request": "^2.47.1",
     "jest": "~23.1.0",
     "rimraf": "~2.6.2",
     "ts-jest": "~22.4.6",
@@ -37,6 +38,7 @@
   "dependencies": {
     "es6-promise-pool": "git+https://github.com/haslers/es6-promise-pool.git",
     "reflect-metadata": "^0.1.12",
+    "request": "^2.87.0",
     "tslib": "~1.9.2",
     "typedi": "^0.8.0"
   }

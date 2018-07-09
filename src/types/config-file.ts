@@ -7,6 +7,8 @@ export interface ConfigFile {
   matchConcurrency: number;
   execParams7z: string,
   logLevel: LogLevel,
+  apiBaseUrl: string,
+  gzip: boolean,
 }
 
 export interface Key {

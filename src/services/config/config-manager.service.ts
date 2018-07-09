@@ -27,6 +27,8 @@ export class ConfigManager {
     matchConcurrency: 10,
     execParams7z: '-mx=3',
     logLevel: LogLevel.debug,
+    apiBaseUrl: 'https://api.playbattlegrounds.com',
+    gzip: true,
   };
 
   private configObj: ConfigFile = this.defaults;
