@@ -25,10 +25,11 @@ export class ConfigManager {
     ],
     dbPath: './output/',
     matchConcurrency: 10,
-    execParams7z: '-mx=3',
     logLevel: LogLevel.debug,
     apiBaseUrl: 'https://api.playbattlegrounds.com',
     gzip: true,
+    mognoDbUrl: 'mongodb://localhost:27017/',
+    mongoDbName: 'pubg_telemetry',
   };
 
   private configObj: ConfigFile = this.defaults;
@@ -44,7 +45,6 @@ export class ConfigManager {
     fs.watchFile(this.fileName, () => {
       this.updateOptions(this.fileName);
     });
-
   }
 
   public get config(): ConfigFile {
@@ -54,4 +54,13 @@ export class ConfigManager {
   private updateOptions(file: string): void {
     Object.assign(this.configObj, this.defaults, JSON.parse(fs.readFileSync(file, {encoding: 'utf8', flag: 'r'})));
   }
+/*
+  private applyArgs() {
+    let regions = process.argv
+      .slice(2)
+      .filter((arg: string) => this.configObj.regions.indexOf(arg) !== -1);
+    if(regions.length) {
+      this.configObj.regions = regions;
+    }
+  }*/
 }

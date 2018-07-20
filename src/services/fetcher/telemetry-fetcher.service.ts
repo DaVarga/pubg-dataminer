@@ -1,29 +1,28 @@
 import * as PromisePool from 'es6-promise-pool';
 import { ConfigManager } from '../config/config-manager.service';
 import { ApiRequester } from '../api-request/api-request.service';
-import { MatchDatabase } from '../database/match-database';
+import { MatchDatabase } from '../database/match-database.service';
+import { IdDatabase, IdDatabaseFactory } from '../database/id-database.service';
 import { Service } from 'typedi';
-import { IdDatabase, IdDatabaseFactory } from '../database/id-database';
+import { Mongodb } from '../mongodb/mongodb.service';
 
 @Service()
 export class TelemetryFetcher {
-  private exit: boolean = false;
-  private readonly regions: string[] = process.argv
-    .slice(2)
-    .filter((arg: string) => this.configManager.config.regions.indexOf(arg) !== -1);
+  private exit = false;
+  private regions: string[];
 
   constructor(
     private configManager: ConfigManager,
     private requester: ApiRequester,
     private matchDatabase: MatchDatabase,
     private idDatabaseFactory: IdDatabaseFactory,
+    private mongodb: Mongodb,
   ) {
-    if (!this.regions.length) {
-      this.regions = [...this.configManager.config.regions];
-    }
+    this.regions = [...this.configManager.config.regions];
   }
 
   public async run() {
+    await this.mongodb.connect();
     for (const region of this.regions) {
       if (this.exit) {
         break;
@@ -49,13 +48,16 @@ export class TelemetryFetcher {
   }
 
   private async fetchMatch(region: string, id: string): Promise<void> {
+    if(await this.matchDatabase.checkMatch(region, id)) {
+      return;
+    }
     const matchInfo = await this.requester.getMatchInfo(region, id);
     // tslint:disable-next-line:no-any
-    const data: any = JSON.parse(matchInfo);
+    const infoParsed: any = JSON.parse(matchInfo);
     // tslint:disable-next-line:typedef
-    const urlParsed = (data.included.find((e) => e.type === 'asset').attributes.URL);
-    const matchTelemetry = await  this.requester.getMatchTelemetry(urlParsed);
-    await this.matchDatabase.addMatch(region, id, matchInfo, matchTelemetry);
+    const urlParsed = (infoParsed.included.find((e) => e.type === 'asset').attributes.URL);
+    const matchTelemetry = await this.requester.getMatchTelemetry(urlParsed);
+    await this.matchDatabase.addMatch(id, infoParsed, JSON.parse(matchTelemetry));
   }
 
   private* generatePromises(
@@ -67,7 +69,7 @@ export class TelemetryFetcher {
       if (this.exit) {
         break;
       }
-      if (!this.matchDatabase.checkMatch(region, id) && !failsDatabase.ids.has(id)) {
+      if (!failsDatabase.ids.has(id)) {
         yield this.fetchMatch(region, id).catch(() => {
           failsDatabase.addToDatabase(new Set<string>([id]));
           failsDatabase.persistDatabase();

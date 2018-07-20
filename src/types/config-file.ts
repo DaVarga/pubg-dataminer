@@ -5,10 +5,11 @@ export interface ConfigFile {
   regions: string[];
   dbPath: string;
   matchConcurrency: number;
-  execParams7z: string,
   logLevel: LogLevel,
   apiBaseUrl: string,
   gzip: boolean,
+  mognoDbUrl: string,
+  mongoDbName: string,
 }
 
 export interface Key {

@@ -9,37 +9,42 @@
     "node": ">= 8.9.0"
   },
   "devDependencies": {
-    "@types/jest": "~22.2.3",
-    "@types/node": "~8.10.18",
+    "@types/jest": "~23.3.0",
+    "@types/mongodb": "^3.1.1",
+    "@types/node": "^8.10.21",
     "@types/request": "^2.47.1",
-    "jest": "~23.1.0",
+    "jest": "~23.4.1",
     "rimraf": "~2.6.2",
-    "ts-jest": "~22.4.6",
-    "tslint": "~5.10.0",
-    "tslint-microsoft-contrib": "~5.0.3",
-    "tsutils": "~2.27.1",
-    "typescript": "~2.9.1"
+    "ts-jest": "~23.0.1",
+    "tslint": "~5.11.0",
+    "tslint-microsoft-contrib": "~5.1.0",
+    "tsutils": "~2.28.0",
+    "typescript": "~2.9.2"
   },
   "scripts": {
     "postinstall": "npm run clean && npm run build",
     "clean": "rimraf coverage build tmp",
     "build": "tsc -p tsconfig.release.json",
     "watch": "tsc -w -p tsconfig.release.json",
+    "build:dev": "tsc -p tsconfig.json",
+    "watch:dev": "tsc -w -p tsconfig.json",
     "lint": "tslint -t stylish --project \"tsconfig.json\"",
     "pretest": "npm run lint",
     "test": "npm run test-only",
     "test-only": "jest --coverage",
     "test:watch": "jest --watch",
     "fetch:matches": "node build/fetch-ids.js",
-    "fetch:telemetry": "node build/fetch-match.js"
+    "fetch:telemetry": "node build/fetch-match.js",
+    "migrate:telemetry": "node build/migrate-match.js"
   },
   "author": "Daniel Varga <daniel.varga@gmx.de>",
   "license": "MIT",
   "dependencies": {
     "es6-promise-pool": "git+https://github.com/haslers/es6-promise-pool.git",
+    "mongodb": "^3.1.1",
     "reflect-metadata": "^0.1.12",
     "request": "^2.87.0",
-    "tslib": "~1.9.2",
+    "tslib": "~1.9.3",
     "typedi": "^0.8.0"
   }
 }

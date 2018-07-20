@@ -1,18 +1,16 @@
 import { clearInterval } from 'timers';
 import { ConfigManager } from '../config/config-manager.service';
 import { MatchIdFetcherFactory } from './match-id-fetcher.service';
-import { IdDatabaseFactory } from '../database/id-database';
+import { IdDatabaseFactory } from '../database/id-database.service';
 import { Service } from 'typedi';
 import { Logger } from '../logger/logger.service';
 import { Key } from '../../types/config-file';
 
 @Service()
 export class MatchIdLoop {
-  private exit: boolean = false;
+  private exit = false;
   private yesterday: Date;
-  private regions: string[] = process.argv
-    .slice(2)
-    .filter((arg: string) => this.configManager.config.regions.indexOf(arg) !== -1);
+  private regions: string[];
 
   constructor(
     private configManager: ConfigManager,
@@ -20,14 +18,12 @@ export class MatchIdLoop {
     private matchIdFetcherFactory: MatchIdFetcherFactory,
     private logger: Logger,
   ) {
-    if (!this.regions.length) {
-      this.regions = [...this.configManager.config.regions];
-    }
+    this.regions = [...this.configManager.config.regions];
   }
 
   public async run(): Promise<void> {
     if (this.configManager.config.keys.length === 0) {
-      this.logger.error('Please add your API keys to the miner-config.json, see README.md for more details.');
+      this.logger.error('Please add your API keys to the miner-config.bak.json, see README.md for more details.');
       return;
     }
 
@@ -45,7 +41,7 @@ export class MatchIdLoop {
           await this.fetchRegion(k, region);
           await this.timeout(61000 / k.rpm);
         }
-        if(--keysRunning === 0) {
+        if (--keysRunning === 0) {
           resolve();
         }
       });
