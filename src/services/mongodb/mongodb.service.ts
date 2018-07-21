@@ -28,6 +28,7 @@ export class Mongodb {
 
   async insertMatch(info: any, telemetryObjects: any[]) {
     try {
+      console.time(`inserting ${info._id}`);
       let infoInsert = await this.db.collection('info').insertOne(info);
       let operations = telemetryObjects.map(doc => {
         doc.matchRef = infoInsert.insertedId;
@@ -35,6 +36,7 @@ export class Mongodb {
       });
       const chunks = this.getChunks(operations, this.configManager.config.mongoInsertChunkSize);
       let result = await Promise.all(chunks.map(chunk => this.db.collection('telemetry').bulkWrite(chunk)));
+      console.time(`inserting ${info._id}`);
       this.logger
         .info(`Inserted match ${infoInsert.insertedId} with ${result.reduce((prev, res) => res.insertedCount + prev, 0)} objects`);
     } catch (e) {

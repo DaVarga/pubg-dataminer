@@ -57,7 +57,10 @@ export class TelemetryFetcher {
     // tslint:disable-next-line:typedef
     const urlParsed = (infoParsed.included.find((e) => e.type === 'asset').attributes.URL);
     const matchTelemetry = await this.requester.getMatchTelemetry(urlParsed);
-    await this.matchDatabase.addMatch(id, infoParsed, JSON.parse(matchTelemetry));
+    console.time(`parsing ${id}`);
+    const parsedTelemetry = JSON.parse(matchTelemetry)
+    console.timeEnd(`parsing ${id}`);
+    await this.matchDatabase.addMatch(id, infoParsed, parsedTelemetry);
   }
 
   private* generatePromises(
