@@ -58,9 +58,12 @@ export class TelemetryFetcher {
     const urlParsed = (infoParsed.included.find((e) => e.type === 'asset').attributes.URL);
     const matchTelemetry = await this.requester.getMatchTelemetry(urlParsed);
     console.time(`parsing ${id}`);
-    const parsedTelemetry = JSON.parse(matchTelemetry)
+    const parsedTelemetry = JSON.parse(matchTelemetry);
     console.timeEnd(`parsing ${id}`);
+
+    console.time(`inserting ${id}`);
     await this.matchDatabase.addMatch(id, infoParsed, parsedTelemetry);
+    console.timeEnd(`inserting ${id}`);
   }
 
   private* generatePromises(
