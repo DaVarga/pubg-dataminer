@@ -15,7 +15,7 @@ export class Mongodb {
 
   async connect() {
     try {
-      let client = await MongoClient.connect(this.configManager.config.mognoDbUrl, {useNewUrlParser: true});
+      let client = await MongoClient.connect(this.configManager.config.mognoDbUrl, {useNewUrlParser: true, poolSize: 500});
       this.db = await client.db(this.configManager.config.mongoDbName);
       this.logger.debug(`Connected to ${this.configManager.config.mognoDbUrl}${this.configManager.config.mongoDbName}`);
       return true;
@@ -32,11 +32,10 @@ export class Mongodb {
         doc.matchRef = infoInsert.insertedId;
         return {'insertOne': {'document': doc}};
       });
-      const chunks = [];
-      for (let i = 0; i < operations.length; i += 1000) {
-        chunks.push(operations.slice(i, i + 1000));
-      }
-      await Promise.all(chunks.map(chunk => this.db.collection('telemetry').bulkWrite(chunk)));
+      const chunks = this.getChunks(operations, 1000);
+      let result = await Promise.all(chunks.map(chunk => this.db.collection('telemetry').bulkWrite(chunk)));
+      this.logger
+        .info(`Inserted match ${infoInsert.insertedId} with ${result.reduce((prev, res) => res.insertedCount + prev, 0)} objects`);
     } catch (e) {
       this.logger.error('error inserting match', e);
     }
@@ -46,4 +45,15 @@ export class Mongodb {
     return !!(await this.db.collection('info').findOne({_id: id}));
   }
 
+  private getChunks(array: any[], chunkSize: number) {
+    if (chunkSize <= 0) {
+      chunkSize = 1;
+    }
+    const chunks = [];
+    for (let i = 0; i < array.length; i += chunkSize) {
+      chunks.push(array.slice(i, i + chunkSize));
+    }
+    return chunks
+
+  }
 }
