@@ -15,7 +15,8 @@ export class Mongodb {
 
   async connect() {
     try {
-      let client = await MongoClient.connect(this.configManager.config.mognoDbUrl, {useNewUrlParser: true, poolSize: 500});
+      let client = await MongoClient
+        .connect(this.configManager.config.mognoDbUrl, {useNewUrlParser: true, poolSize: this.configManager.config.mongoPoolSize});
       this.db = await client.db(this.configManager.config.mongoDbName);
       this.logger.debug(`Connected to ${this.configManager.config.mognoDbUrl}${this.configManager.config.mongoDbName}`);
       return true;
@@ -32,7 +33,7 @@ export class Mongodb {
         doc.matchRef = infoInsert.insertedId;
         return {'insertOne': {'document': doc}};
       });
-      const chunks = this.getChunks(operations, 1000);
+      const chunks = this.getChunks(operations, this.configManager.config.mongoInsertChunkSize);
       let result = await Promise.all(chunks.map(chunk => this.db.collection('telemetry').bulkWrite(chunk)));
       this.logger
         .info(`Inserted match ${infoInsert.insertedId} with ${result.reduce((prev, res) => res.insertedCount + prev, 0)} objects`);

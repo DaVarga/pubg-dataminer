@@ -10,6 +10,8 @@ export interface ConfigFile {
   gzip: boolean,
   mognoDbUrl: string,
   mongoDbName: string,
+  mongoPoolSize: number,
+  mongoInsertChunkSize: number,
 }
 
 export interface Key {

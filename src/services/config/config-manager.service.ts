@@ -30,6 +30,8 @@ export class ConfigManager {
     gzip: true,
     mognoDbUrl: 'mongodb://localhost:27017/',
     mongoDbName: 'pubg_telemetry',
+    mongoPoolSize: 100,
+    mongoInsertChunkSize: 1000,
   };
 
   private configObj: ConfigFile = this.defaults;
