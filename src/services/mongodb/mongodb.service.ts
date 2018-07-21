@@ -28,9 +28,15 @@ export class Mongodb {
   async insertMatch(info: any, telemetryObjects: any[]) {
     try {
       let infoInsert = await this.db.collection('info').insertOne(info);
-      telemetryObjects.forEach(x => x.matchRef = infoInsert.insertedId);
-      let telemetryInsert = await this.db.collection('telemetry').insertMany(telemetryObjects);
-      this.logger.info('Inserted telemetry objects', telemetryInsert.result.n);
+      let operations = telemetryObjects.map(doc => {
+        doc.matchRef = infoInsert.insertedId;
+        return {'insertOne': {'document': doc}};
+      });
+      const chunks = [];
+      for (let i = 0; i < operations.length; i += 1000) {
+        chunks.push(operations.slice(i, i + 1000));
+      }
+      await Promise.all(chunks.map(chunk => this.db.collection('telemetry').bulkWrite(chunk)));
     } catch (e) {
       this.logger.error('error inserting match', e);
     }
