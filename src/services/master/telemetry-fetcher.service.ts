@@ -9,6 +9,7 @@ import { WorkerPool } from './worker-pool.service';
 export class TelemetryFetcher {
   private exit = false;
   private regions: string[];
+  private fetchedIds: Set<string>;
 
   constructor(
     private configManager: ConfigManager,
@@ -20,7 +21,7 @@ export class TelemetryFetcher {
   }
 
   public async run() {
-    await this.mongodb.connect();
+    this.fetchedIds = await this.mongodb.listMatchIds();
     await this.workerPool.init();
     for (const region of this.regions) {
       if (this.exit) {
@@ -59,7 +60,7 @@ export class TelemetryFetcher {
       if (this.exit) {
         break;
       }
-      if (!failsDatabase.ids.has(id)) {
+      if (!failsDatabase.ids.has(id) && !this.fetchedIds.has(id)) {
         yield this.fetchTelemetry(id, region).catch(() => {
           failsDatabase.addToDatabase(new Set<string>([id]));
           failsDatabase.persistDatabase();

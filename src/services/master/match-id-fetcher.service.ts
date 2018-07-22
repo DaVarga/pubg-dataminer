@@ -43,11 +43,6 @@ export class MatchIdFetcher {
     return false;
   }
 
-  public reset(date: Date = new Date()) {
-    this.currentDate = new Date(date);
-    this.catalog.clear();
-  }
-
   private getMatchIds(json: string): string[] {
     // tslint:disable-next-line:no-any
     const obj: any = JSON.parse(json);

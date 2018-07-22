@@ -2,7 +2,6 @@ import * as process from 'process';
 import { Service } from 'typedi';
 import { ApiRequester } from '../shared/api-request.service';
 import { MessageTelemetryFetch } from '../../types/message-telemetry-fetch';
-import { MatchDatabase } from '../shared/match-database.service';
 import { MessageWorkerDone } from '../../types/message-worker-done';
 import { Mongodb } from '../shared/mongodb.service';
 
@@ -11,21 +10,16 @@ export class Worker {
 
   constructor(
     private requester: ApiRequester,
-    private matchDatabase: MatchDatabase,
     private mongodb: Mongodb,
   ) {
   }
 
   public async init() {
-    await this.mongodb.connect();
     process.on('message', msg => this.handleMessage(msg));
     process.send({ready: true});
   }
 
   private async fetchMatch(region: string, id: string): Promise<void> {
-    if (await this.matchDatabase.checkMatch(region, id)) {
-      return;
-    }
     const matchInfo = await this.requester.getMatchInfo(region, id);
     // tslint:disable-next-line:no-any
     const infoParsed: any = JSON.parse(matchInfo);
@@ -37,7 +31,7 @@ export class Worker {
     console.timeEnd(`parsing ${id}`);
 
     console.time(`inserting ${id}`);
-    await this.matchDatabase.addMatch(id, infoParsed, parsedTelemetry);
+    await this.mongodb.insertMatch(id, infoParsed, parsedTelemetry);
     console.timeEnd(`inserting ${id}`);
   }
 

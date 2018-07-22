@@ -7,16 +7,13 @@ Telemetry data is stored into mongodb.
 ## Dependencies
 - MongoDB >= 3.0
 - nodejs >= 8.0.0
-- *7z (only for migration into mongodb)*
 
 ## Installation
 - Clone or download repo and run in project directory and run ```$ npm install```
-- *make sure 7za is executable by the user running this application*
 
 ## How to run
 - To fetch match ids ```$ npm run fetch:matches```
 - To fetch telemetry of your collected match ids ```$ npm run fetch:telemetry```
-- To migrate ids ```$ npm run migrate:telemetry```
 
 ## Configuration
 Create a developer account on https://developer.playbattlegrounds.com/ and add one ore more API keys into the miner-config.bak.json. Make sure you set the rpm (request per minute) too.  
@@ -80,8 +77,7 @@ example:
 ~~On my machine with an Intel Core i7-3770 and a 1GBit/s connection I could achieve a download speed of ~0.8GBit/s at ~80% cpu utilization with the following settings.~~
 
 ```json
-  "matchConcurrency": 32,   
-  "execParams7z": "-mx=3",
+  "matchConcurrency": 32,
   "gzip": true
 ```
 

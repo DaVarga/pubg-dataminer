@@ -35,7 +35,6 @@
     "test:watch": "jest --watch",
     "fetch:matches": "node build/fetch-ids.js",
     "fetch:telemetry": "node build/fetch-match.js",
-    "migrate:telemetry": "node build/migrate-match.js"
   },
   "author": "Daniel Varga <daniel.varga@gmx.de>",
   "license": "MIT",
