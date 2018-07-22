@@ -34,7 +34,7 @@
     "test-only": "jest --coverage",
     "test:watch": "jest --watch",
     "fetch:matches": "node build/fetch-ids.js",
-    "fetch:telemetry": "node build/fetch-match.js",
+    "fetch:telemetry": "node build/fetch-match.js"
   },
   "author": "Daniel Varga <daniel.varga@gmx.de>",
   "license": "MIT",
