@@ -1,4 +1,4 @@
-import { ConfigManager } from '../config/config-manager.service';
+import { ConfigManager } from './config-manager.service';
 import { Service } from 'typedi';
 import { LogLevel } from '../../types/log-level';
 

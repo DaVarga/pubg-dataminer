@@ -1,9 +1,9 @@
 import { clearInterval } from 'timers';
-import { ConfigManager } from '../config/config-manager.service';
+import { ConfigManager } from '../shared/config-manager.service';
 import { MatchIdFetcherFactory } from './match-id-fetcher.service';
-import { IdDatabaseFactory } from '../database/id-database.service';
+import { IdDatabaseFactory } from './id-database.service';
 import { Service } from 'typedi';
-import { Logger } from '../logger/logger.service';
+import { Logger } from '../shared/logger.service';
 import { Key } from '../../types/config-file';
 
 @Service()

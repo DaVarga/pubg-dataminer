@@ -1,8 +1,8 @@
 import * as fs from 'fs';
 import { Service } from 'typedi';
-import { ConfigManager } from '../config/config-manager.service';
-import { DirectoryFactory } from './directory.service';
-import { Logger } from '../logger/logger.service';
+import { ConfigManager } from '../shared/config-manager.service';
+import { DirectoryFactory } from '../shared/directory.service';
+import { Logger } from '../shared/logger.service';
 
 @Service()
 export class IdDatabaseFactory {

@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
-import { ConfigManager } from '../config/config-manager.service';
-import { MatchDatabase } from '../database/match-database.service';
-import { Mongodb } from './mongodb.service';
+import { ConfigManager } from '../shared/config-manager.service';
+import { MatchDatabase } from '../shared/match-database.service';
+import { Mongodb } from '../shared/mongodb.service';
 
 @Service()
 export class Importer {

@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { Container } from 'typedi';
-import { MatchIdLoop } from './services/fetcher/match-id-loop.service';
+import { MatchIdLoop } from './services/master/match-id-loop.service';
 
 const matchIdLoop = Container.get(MatchIdLoop);
 matchIdLoop.run().then(()=>{

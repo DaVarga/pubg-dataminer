@@ -1,5 +1,5 @@
-import { ApiRequester } from '../api-request/api-request.service';
-import { Logger } from '../logger/logger.service';
+import { ApiRequester } from '../shared/api-request.service';
+import { Logger } from '../shared/logger.service';
 import { Service } from 'typedi';
 
 @Service()

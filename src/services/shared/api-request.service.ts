@@ -1,8 +1,8 @@
 import { Service } from 'typedi';
-import { Logger } from '../logger/logger.service';
+import { Logger } from './logger.service';
 import * as request from 'request';
 import { Response } from 'request';
-import { ConfigManager } from '../config/config-manager.service';
+import { ConfigManager } from './config-manager.service';
 
 @Service()
 export class ApiRequester {

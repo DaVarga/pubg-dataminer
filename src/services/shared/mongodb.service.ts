@@ -1,5 +1,5 @@
-import { ConfigManager } from '../config/config-manager.service';
-import { Logger } from '../logger/logger.service';
+import { ConfigManager } from './config-manager.service';
+import { Logger } from './logger.service';
 import { Db, MongoClient } from 'mongodb';
 import { Service } from 'typedi';
 

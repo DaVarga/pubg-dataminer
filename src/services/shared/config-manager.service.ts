@@ -40,9 +40,9 @@ export class ConfigManager {
   constructor() {
     if (fs.existsSync(this.fileName)) {
       this.updateOptions(this.fileName);
-      fs.writeFileSync(this.fileName, JSON.stringify(this.defaults, null, 2));
+      //fs.writeFileSync(this.fileName, JSON.stringify(this.defaults, null, 2));
     } else {
-      fs.writeFileSync(this.fileName, JSON.stringify(this.defaults, null, 2));
+      //fs.writeFileSync(this.fileName, JSON.stringify(this.defaults, null, 2));
     }
     fs.watchFile(this.fileName, () => {
       this.updateOptions(this.fileName);

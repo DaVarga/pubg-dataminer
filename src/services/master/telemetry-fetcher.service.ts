@@ -1,10 +1,9 @@
 import * as PromisePool from 'es6-promise-pool';
-import { ConfigManager } from '../config/config-manager.service';
-import { ApiRequester } from '../api-request/api-request.service';
-import { MatchDatabase } from '../database/match-database.service';
-import { IdDatabase, IdDatabaseFactory } from '../database/id-database.service';
+import { ConfigManager } from '../shared/config-manager.service';
+import { IdDatabase, IdDatabaseFactory } from './id-database.service';
 import { Service } from 'typedi';
-import { Mongodb } from '../mongodb/mongodb.service';
+import { Mongodb } from '../shared/mongodb.service';
+import { WorkerPool } from './worker-pool.service';
 
 @Service()
 export class TelemetryFetcher {
@@ -13,16 +12,16 @@ export class TelemetryFetcher {
 
   constructor(
     private configManager: ConfigManager,
-    private requester: ApiRequester,
-    private matchDatabase: MatchDatabase,
-    private idDatabaseFactory: IdDatabaseFactory,
+    private workerPool: WorkerPool,
     private mongodb: Mongodb,
+    private idDatabaseFactory: IdDatabaseFactory,
   ) {
     this.regions = [...this.configManager.config.regions];
   }
 
   public async run() {
     await this.mongodb.connect();
+    await this.workerPool.init();
     for (const region of this.regions) {
       if (this.exit) {
         break;
@@ -47,23 +46,8 @@ export class TelemetryFetcher {
     await promisePool.start();
   }
 
-  private async fetchMatch(region: string, id: string): Promise<void> {
-    if(await this.matchDatabase.checkMatch(region, id)) {
-      return;
-    }
-    const matchInfo = await this.requester.getMatchInfo(region, id);
-    // tslint:disable-next-line:no-any
-    const infoParsed: any = JSON.parse(matchInfo);
-    // tslint:disable-next-line:typedef
-    const urlParsed = (infoParsed.included.find((e) => e.type === 'asset').attributes.URL);
-    const matchTelemetry = await this.requester.getMatchTelemetry(urlParsed);
-    console.time(`parsing ${id}`);
-    const parsedTelemetry = JSON.parse(matchTelemetry);
-    console.timeEnd(`parsing ${id}`);
-
-    console.time(`inserting ${id}`);
-    await this.matchDatabase.addMatch(id, infoParsed, parsedTelemetry);
-    console.timeEnd(`inserting ${id}`);
+  private fetchTelemetry(id, region): Promise<void> {
+    return this.workerPool.fetchTelemetry(id, region);
   }
 
   private* generatePromises(
@@ -76,7 +60,7 @@ export class TelemetryFetcher {
         break;
       }
       if (!failsDatabase.ids.has(id)) {
-        yield this.fetchMatch(region, id).catch(() => {
+        yield this.fetchTelemetry(id, region).catch(() => {
           failsDatabase.addToDatabase(new Set<string>([id]));
           failsDatabase.persistDatabase();
           console.error(

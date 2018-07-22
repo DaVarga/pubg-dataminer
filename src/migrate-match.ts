@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { Container } from 'typedi';
-import { Importer } from './services/mongodb/importer.service';
+import { Importer } from './services/master/importer.service';
 
 const importer = Container.get(Importer);
 importer.run().then(()=>{

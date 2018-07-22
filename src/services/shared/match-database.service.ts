@@ -1,10 +1,10 @@
 import * as fs from 'fs';
 import { Service } from 'typedi';
 import { Compressor } from './compressor.service';
-import { ConfigManager } from '../config/config-manager.service';
+import { ConfigManager } from './config-manager.service';
 import { DirectoryFactory } from './directory.service';
-import { Logger } from '../logger/logger.service';
-import { Mongodb } from '../mongodb/mongodb.service';
+import { Logger } from './logger.service';
+import { Mongodb } from './mongodb.service';
 
 @Service()
 export class MatchDatabase {
